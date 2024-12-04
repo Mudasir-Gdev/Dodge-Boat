@@ -5,20 +5,24 @@ using UnityEngine;
 public class MissilesAI : MonoBehaviour
 {
     private GameManager GM;
-    
+    public GameObject Explode;
+    public GameObject GameOver;
     private GameObject target;
     public float speed = 10f;
     public float rotationSpeed =5f;
     void Start()
     {
         target = GameObject.Find("Player");
-        GM = gameObject.AddComponent<GameManager>();
-        Destroy(gameObject, 10);
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
+        Destroy(gameObject, 15);
+        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         //Particles
         if (target == null) return;
     
@@ -36,15 +40,30 @@ public class MissilesAI : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Explosion particles
-        Destroy(gameObject);
-        Destroy(collision.gameObject);
-        if (collision.gameObject == GameObject.Find("Player"))
+        Debug.Log("Collided");
+        if (collision.gameObject.CompareTag("Shield"))
         {
-            
-            GM.GameOver();
+            collision.gameObject.SetActive(false);
+            Explod();
         }
-        
+        else
+        {
+
+            Explod();
+            Destroy(collision.gameObject);
+            if (collision.gameObject == GameObject.Find("Player"))
+            {
+
+                GM.gameover();
+                
+            }
+
+        }
+    }
+    void Explod()
+    {
+       Instantiate(Explode,transform.position, Quaternion.identity);    
+        Destroy(gameObject);
     }
 
 }

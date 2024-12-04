@@ -1,14 +1,14 @@
-using JetBrains.Annotations;
+
+
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+
 using UnityEngine;
 
 
 public class MissilesSpawner : MonoBehaviour
 {
     public Transform boatPos;
-    //public GameObject Missile;
     private Vector3 offset;
 
     public GameObject[] Missiles;
@@ -17,26 +17,38 @@ public class MissilesSpawner : MonoBehaviour
     private float spawnX;
     private float spawnZ;
     private float T ;
+    public bool ResetTimer;
+    private GameManager GM;
     void Start()
     {
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
         int t=Random.Range(7,10);
         if(spawn)
         InvokeRepeating("SpawnMissile", 2,t);
+
+        //ResetTimer = false;
      
     }
 
-    
+
     void Update()
     {
-        
-        T = Time.time;
+        if (ResetTimer)
+        {
+            T = 0;
+            ResetTimer = false;
+        }
+        else
+        {
+            T += Time.deltaTime;
+        }
     }
 
     int Index()
     {
         int FirstI , LastI ;
 
-        Debug.Log(T);
+       
 
         if (T > 56)
         {
@@ -83,11 +95,6 @@ public class MissilesSpawner : MonoBehaviour
         offset = new Vector3(boatPos.position.x+spawnX,boatPos.position.y, boatPos.position.z +spawnZ);
         Instantiate(Missiles[Index()],offset,Spawndir);
 
-        //Contains missiles List
-
-        //Destroy the Missiles after timer
-
-       
         
     }
 }
